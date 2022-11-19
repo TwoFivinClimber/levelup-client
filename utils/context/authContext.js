@@ -35,6 +35,7 @@ const AuthProvider = (props) => {
       if (fbUser) {
         setOAuthUser(fbUser);
         checkUser(fbUser.uid).then((gamerInfo) => {
+          // Response is error obj from django rest framework
           let userObj = {};
           if ('null' in gamerInfo) {
             userObj = gamerInfo;
