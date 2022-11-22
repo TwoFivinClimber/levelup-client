@@ -1,4 +1,7 @@
+import axios from 'axios';
 import { clientCredentials } from '../client';
+
+const dbUrl = clientCredentials.databaseURL;
 
 const getEvents = () => new Promise((resolve, reject) => {
   fetch(`${clientCredentials.databaseURL}/events`)
@@ -7,5 +10,11 @@ const getEvents = () => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const createEvent = (event) => new Promise((resolve, reject) => {
+  axios.post(`${dbUrl}/events`, event)
+    .then((response) => resolve(response.data))
+    .catch(reject);
+});
+
 // eslint-disable-next-line import/prefer-default-export
-export { getEvents };
+export { getEvents, createEvent };
