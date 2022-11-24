@@ -7,7 +7,7 @@ const NewEvent = () => {
   return (
     <div>
       <h2>Register New Event</h2>
-      <EventForm user={user} />
+      <EventForm user={user} eventObj={{}} />
     </div>
   );
 };

@@ -9,6 +9,11 @@ const getEvents = () => new Promise((resolve, reject) => {
     .then(resolve)
     .catch(reject);
 });
+const getEvent = (eventId) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/events/${eventId}`)
+    .then((response) => resolve(response.data))
+    .catch(reject);
+});
 
 const createEvent = (event) => new Promise((resolve, reject) => {
   axios.post(`${dbUrl}/events`, event)
@@ -17,4 +22,4 @@ const createEvent = (event) => new Promise((resolve, reject) => {
 });
 
 // eslint-disable-next-line import/prefer-default-export
-export { getEvents, createEvent };
+export { getEvents, createEvent, getEvent };

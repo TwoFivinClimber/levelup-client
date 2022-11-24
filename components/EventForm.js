@@ -5,15 +5,17 @@ import { Button, Form } from 'react-bootstrap';
 import { getGames } from '../utils/data/gameData';
 import { createEvent } from '../utils/data/eventData';
 
-const EventForm = ({ user }) => {
+const initialState = {
+  description: '',
+  date: '',
+  time: '',
+  game_id: 0,
+  organizer_id: 0,
+};
+
+const EventForm = ({ user, eventObj }) => {
   const [games, setGames] = useState([]);
-  const [input, setInput] = useState({
-    description: '',
-    date: '',
-    time: '',
-    game_id: 0,
-    organizer_id: 0,
-  });
+  const [input, setInput] = useState(initialState);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -22,6 +24,7 @@ const EventForm = ({ user }) => {
       ...prevState,
       [name]: value,
     }));
+    console.warn(input);
   };
 
   const handleSubmit = (e) => {
@@ -37,8 +40,11 @@ const EventForm = ({ user }) => {
   };
 
   useEffect(() => {
+    if (eventObj.id) {
+      setInput(eventObj);
+    }
     getGames().then(setGames);
-  }, []);
+  }, [eventObj, router, user]);
 
   return (
     <>
@@ -47,14 +53,14 @@ const EventForm = ({ user }) => {
           <Form.Label>Description</Form.Label>
           <Form.Control name="description" value={input.description} onChange={handleChange} required />
           <Form.Label>Date</Form.Label>
-          <Form.Control name="date" type="date" value={input.maker} onChange={handleChange} required />
+          <Form.Control name="date" type="date" value={input.date} onChange={handleChange} required />
           <Form.Label>Time</Form.Label>
           <Form.Control name="time" type="time" value={input.time} onChange={handleChange} required />
           <Form.Label>Game</Form.Label>
           <Form.Select name="game" onChange={handleChange} required>
             <option value="">Select a Game Type</option>
             {games?.map((type) => (
-              <option key={type.id} value={type.id} label={type.title} />
+              <option key={type.id} label={type.title} selected={type.id === eventObj.game?.id} />
             ))};
           </Form.Select>
         </Form.Group>
@@ -68,6 +74,21 @@ EventForm.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  eventObj: PropTypes.shape({
+    id: PropTypes.number,
+    description: PropTypes.string,
+    date: PropTypes.string,
+    time: PropTypes.string,
+    game: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+    }).isRequired,
+    organizer_id: PropTypes.number,
+  }),
+};
+
+EventForm.defaultProps = {
+  eventObj: initialState,
 };
 
 export default EventForm;

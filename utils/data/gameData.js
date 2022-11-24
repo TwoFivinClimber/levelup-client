@@ -1,9 +1,17 @@
+import axios from 'axios';
 import { clientCredentials } from '../client';
 
 const dbUrl = clientCredentials.databaseURL;
 
 const getGames = () => new Promise((resolve, reject) => {
   fetch(`${dbUrl}/games`)
+    .then((response) => response.json())
+    .then(resolve)
+    .catch(reject);
+});
+
+const getGame = (gameId) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl}/games/${gameId}`)
     .then((response) => response.json())
     .then(resolve)
     .catch(reject);
@@ -29,4 +37,12 @@ const getGameTypes = () => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-export { getGames, createGame, getGameTypes };
+const updateGame = (gameObj, id) => new Promise((resolve, reject) => {
+  axios.put(`${dbUrl}/games/${id}`, gameObj)
+    .then((response) => resolve(response.data))
+    .catch(reject);
+});
+
+export {
+  getGames, getGame, createGame, getGameTypes, updateGame,
+};
