@@ -21,5 +21,13 @@ const createEvent = (event) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const updateEvent = (eventObj, id) => new Promise((resolve, reject) => {
+  axios.put(`${dbUrl}/events/${id}`, eventObj)
+    .then(resolve)
+    .catch(reject);
+});
+
 // eslint-disable-next-line import/prefer-default-export
-export { getEvents, createEvent, getEvent };
+export {
+  getEvents, createEvent, getEvent, updateEvent,
+};

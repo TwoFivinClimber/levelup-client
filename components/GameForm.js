@@ -14,7 +14,7 @@ const initialState = {
 
 const GameForm = ({ user, gameObj }) => {
   const [gameTypes, setGameTypes] = useState([]);
-  const [input, setInput] = useState({ initialState });
+  const [input, setInput] = useState(initialState);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -23,6 +23,7 @@ const GameForm = ({ user, gameObj }) => {
       ...prevState,
       [name]: value,
     }));
+    console.warn(input);
   };
 
   const handleSubmit = (e) => {
@@ -45,7 +46,14 @@ const GameForm = ({ user, gameObj }) => {
 
   useEffect(() => {
     if (gameObj.id) {
-      setInput(gameObj);
+      const gameEdit = {
+        skill_level: gameObj.skill_level,
+        number_of_players: gameObj.number_of_players,
+        title: gameObj.title,
+        maker: gameObj.maker,
+        game_type: gameObj.game_type.id,
+      };
+      setInput(gameEdit);
     }
     getGameTypes().then(setGameTypes);
   }, [gameObj]);
@@ -63,10 +71,10 @@ const GameForm = ({ user, gameObj }) => {
           <Form.Label>Skill Level</Form.Label>
           <Form.Control name="skill_level" type="number" value={input.skill_level} onChange={handleChange} required />
           <Form.Label>Game Type</Form.Label>
-          <Form.Select name="game_type" type="number" onChange={handleChange} required>
+          <Form.Select name="game_type" value={input.game_type} onChange={handleChange} required>
             <option value="">Select a Game Type</option>
             {gameTypes?.map((type) => (
-              <option key={type.id} selected={gameObj.game_type === type.id} value={type.id} label={type.label}>Select a Game Type</option>
+              <option key={type.id} value={type.id} label={type.label} />
             ))};
           </Form.Select>
         </Form.Group>
@@ -80,7 +88,7 @@ const GameForm = ({ user, gameObj }) => {
 
 GameForm.propTypes = {
   user: PropTypes.shape({
-    uid: PropTypes.string.isRequired,
+    uid: PropTypes.string,
   }).isRequired,
   gameObj: PropTypes.shape({
     id: PropTypes.number,
@@ -89,8 +97,8 @@ GameForm.propTypes = {
     number_of_players: PropTypes.number,
     skill_level: PropTypes.number,
     game_type: PropTypes.shape({
-      id: PropTypes.number,
-      lebel: PropTypes.string,
+      id: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
     }),
   }),
 };

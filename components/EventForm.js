@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { getGames } from '../utils/data/gameData';
-import { createEvent } from '../utils/data/eventData';
+import { createEvent, updateEvent } from '../utils/data/eventData';
 
 const initialState = {
   description: '',
   date: '',
   time: '',
-  game_id: 0,
-  organizer_id: 0,
+  game: 0,
 };
 
 const EventForm = ({ user, eventObj }) => {
@@ -24,7 +23,6 @@ const EventForm = ({ user, eventObj }) => {
       ...prevState,
       [name]: value,
     }));
-    console.warn(input);
   };
 
   const handleSubmit = (e) => {
@@ -34,14 +32,25 @@ const EventForm = ({ user, eventObj }) => {
       date: input.date,
       time: input.time,
       game: Number(input.game),
-      organizer_id: Number(user.id),
+      organizer: Number(user.id),
     };
-    createEvent(event).then(() => router.push('/events'));
+    if (eventObj.id) {
+      delete event.organizer;
+      updateEvent(event, eventObj.id).then(() => router.push('/events'));
+    } else {
+      createEvent(event).then(() => router.push('/events'));
+    }
   };
 
   useEffect(() => {
     if (eventObj.id) {
-      setInput(eventObj);
+      const eventEdit = {
+        description: eventObj.description,
+        date: eventObj.date,
+        time: eventObj.time,
+        game: eventObj.game.id,
+      };
+      setInput(eventEdit);
     }
     getGames().then(setGames);
   }, [eventObj, router, user]);
@@ -57,10 +66,10 @@ const EventForm = ({ user, eventObj }) => {
           <Form.Label>Time</Form.Label>
           <Form.Control name="time" type="time" value={input.time} onChange={handleChange} required />
           <Form.Label>Game</Form.Label>
-          <Form.Select name="game" onChange={handleChange} required>
+          <Form.Select name="game" onChange={handleChange} value={input.game} required>
             <option value="">Select a Game Type</option>
-            {games?.map((type) => (
-              <option key={type.id} label={type.title} selected={type.id === eventObj.game?.id} />
+            {games?.map((game) => (
+              <option key={game.id} value={game.id} label={game.title} />
             ))};
           </Form.Select>
         </Form.Group>
@@ -82,7 +91,7 @@ EventForm.propTypes = {
     game: PropTypes.shape({
       id: PropTypes.number.isRequired,
       title: PropTypes.string.isRequired,
-    }).isRequired,
+    }),
     organizer_id: PropTypes.number,
   }),
 };
