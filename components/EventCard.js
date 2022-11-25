@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { Card, Button } from 'react-bootstrap';
+import { deleteEvent } from '../utils/data/eventData';
 
-const EventCard = ({ obj }) => {
+const EventCard = ({ obj, onUpdate }) => {
   const router = useRouter();
+
+  const deleteThisEvent = (eventId) => {
+    if (window.confirm('Are you sure?')) {
+      deleteEvent(eventId).then(() => onUpdate());
+    }
+  };
 
   return (
     <Card className="text-center">
@@ -15,7 +22,7 @@ const EventCard = ({ obj }) => {
         <Card.Text>{obj.date} {obj.time.toLocaleString()}</Card.Text>
         <Card.Text>By: Gamer No.{obj.organizer.id}</Card.Text>
         <Button onClick={() => router.push(`/events/edit/${obj.id}`)}><BsFillPencilFill /></Button>
-        <Button><BsFillTrashFill /></Button>
+        <Button onClick={() => deleteThisEvent(obj.id)}><BsFillTrashFill /></Button>
       </Card.Body>
       <Card.Footer className="text-muted">Skill Level: {obj.game.skill_level}</Card.Footer>
     </Card>
@@ -42,6 +49,7 @@ EventCard.propTypes = {
       bio: PropTypes.string,
     }),
   }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default EventCard;

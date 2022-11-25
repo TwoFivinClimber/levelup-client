@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
+import { deleteGame } from '../utils/data/gameData';
 
 const GameCard = ({
   id,
@@ -10,8 +11,15 @@ const GameCard = ({
   maker,
   numberOfPlayers,
   skillLevel,
+  onUpdate,
 }) => {
   const router = useRouter();
+
+  const deleteThisGame = (gameId) => {
+    if (window.confirm('Are you sure ?')) {
+      deleteGame(gameId).then(() => onUpdate());
+    }
+  };
 
   return (
     <Card className="text-center">
@@ -20,7 +28,7 @@ const GameCard = ({
         <Card.Title>By: {maker}</Card.Title>
         <Card.Text>{numberOfPlayers} players needed</Card.Text>
         <Button onClick={() => router.push(`/games/edit/${id}`)}><BsFillPencilFill /></Button>
-        <Button><BsFillTrashFill /></Button>
+        <Button onClick={(() => deleteThisGame(id))}><BsFillTrashFill /></Button>
       </Card.Body>
       <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
     </Card>
@@ -33,6 +41,7 @@ GameCard.propTypes = {
   maker: PropTypes.string.isRequired,
   numberOfPlayers: PropTypes.number.isRequired,
   skillLevel: PropTypes.number.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default GameCard;

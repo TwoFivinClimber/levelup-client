@@ -22,12 +22,24 @@ const createEvent = (event) => new Promise((resolve, reject) => {
 });
 
 const updateEvent = (eventObj, id) => new Promise((resolve, reject) => {
-  axios.put(`${dbUrl}/events/${id}`, eventObj)
-    .then(resolve)
+  fetch(`${dbUrl}/events/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eventObj),
+  })
+    .then((response) => resolve(response.data))
     .catch(reject);
+});
+
+const deleteEvent = (id) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl}/events/${id}`, {
+    method: 'DELETE',
+  }).then(resolve).catch(reject);
 });
 
 // eslint-disable-next-line import/prefer-default-export
 export {
-  getEvents, createEvent, getEvent, updateEvent,
+  getEvents, createEvent, getEvent, updateEvent, deleteEvent,
 };

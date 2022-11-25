@@ -8,8 +8,12 @@ function Event() {
   const router = useRouter();
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
+  const getTheContent = () => {
     getEvents().then(setEvents);
+  };
+
+  useEffect(() => {
+    getTheContent();
   }, []);
   return (
     <>
@@ -17,7 +21,7 @@ function Event() {
       <article className="games" />
       <h1>Events</h1>
       {events.map((event) => (
-        <EventCard key={event.id} obj={event} />
+        <EventCard key={event.id} obj={event} onUpdate={getTheContent} />
       ))}
     </>
   );
