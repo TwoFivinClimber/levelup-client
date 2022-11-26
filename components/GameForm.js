@@ -23,7 +23,6 @@ const GameForm = ({ user, gameObj }) => {
       ...prevState,
       [name]: value,
     }));
-    console.warn(input);
   };
 
   const handleSubmit = (e) => {

@@ -1,12 +1,14 @@
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
+import { BsFillPencilFill, BsFillTrashFill, BsArrowLeftSquare } from 'react-icons/bs';
 import { Card, Button } from 'react-bootstrap';
 import { deleteEvent } from '../utils/data/eventData';
+import { useAuth } from '../utils/context/authContext';
 
 const EventCard = ({ obj, onUpdate }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const deleteThisEvent = (eventId) => {
     if (window.confirm('Are you sure?')) {
@@ -16,13 +18,19 @@ const EventCard = ({ obj, onUpdate }) => {
 
   return (
     <Card className="text-center">
-      <Card.Title>{obj.description}</Card.Title>
+      <div className="join-event-div">
+        <Card.Title>{obj.description}</Card.Title>
+        {obj.organizer.id !== user.id ? (
+          <i><BsArrowLeftSquare className="join-event-button" /> Join Event</i>
+        ) : ''}
+      </div>
       <Card.Body>
         <Card.Text>Game: {obj.game.title}</Card.Text>
         <Card.Text>{obj.date} {obj.time.toLocaleString()}</Card.Text>
         <Card.Text>By: Gamer No.{obj.organizer.id}</Card.Text>
-        <Button onClick={() => router.push(`/events/edit/${obj.id}`)}><BsFillPencilFill /></Button>
-        <Button onClick={() => deleteThisEvent(obj.id)}><BsFillTrashFill /></Button>
+        {obj.organizer.id === user.id ? (
+          <><Button onClick={() => router.push(`/events/edit/${obj.id}`)}><BsFillPencilFill /></Button><Button onClick={() => deleteThisEvent(obj.id)}><BsFillTrashFill /></Button></>
+        ) : ''}
       </Card.Body>
       <Card.Footer className="text-muted">Skill Level: {obj.game.skill_level}</Card.Footer>
     </Card>

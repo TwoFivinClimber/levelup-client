@@ -4,6 +4,7 @@ import { Card, Button } from 'react-bootstrap';
 import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import { deleteGame } from '../utils/data/gameData';
+import { useAuth } from '../utils/context/authContext';
 
 const GameCard = ({
   id,
@@ -12,8 +13,10 @@ const GameCard = ({
   numberOfPlayers,
   skillLevel,
   onUpdate,
+  gamerId,
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const deleteThisGame = (gameId) => {
     if (window.confirm('Are you sure ?')) {
@@ -27,8 +30,11 @@ const GameCard = ({
       <Card.Body>
         <Card.Title>By: {maker}</Card.Title>
         <Card.Text>{numberOfPlayers} players needed</Card.Text>
-        <Button onClick={() => router.push(`/games/edit/${id}`)}><BsFillPencilFill /></Button>
-        <Button onClick={(() => deleteThisGame(id))}><BsFillTrashFill /></Button>
+        {user.id === gamerId ? (
+          <>
+            <Button onClick={() => router.push(`/games/edit/${id}`)}><BsFillPencilFill /></Button><Button onClick={(() => deleteThisGame(id))}><BsFillTrashFill /></Button>
+          </>
+        ) : ''}
       </Card.Body>
       <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
     </Card>
@@ -41,6 +47,7 @@ GameCard.propTypes = {
   maker: PropTypes.string.isRequired,
   numberOfPlayers: PropTypes.number.isRequired,
   skillLevel: PropTypes.number.isRequired,
+  gamerId: PropTypes.number.isRequired,
   onUpdate: PropTypes.func.isRequired,
 };
 

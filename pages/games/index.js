@@ -23,7 +23,7 @@ function Home() {
         <h1>Games</h1>
         {games.map((game) => (
           <section key={`game--${game.id}`} className="game">
-            <GameCard id={game.id} title={game.title} maker={game.maker} numberOfPlayers={game.number_of_players} skillLevel={game.skill_level} onUpdate={getTheContent} />
+            <GameCard id={game.id} title={game.title} maker={game.maker} numberOfPlayers={game.number_of_players} skillLevel={game.skill_level} gamerId={game.gamer.id} onUpdate={getTheContent} />
           </section>
         ))}
       </article>
