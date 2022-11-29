@@ -32,6 +32,12 @@ body {
   height: 2rem;
   width: 2rem;
 }
+.leave-event-button{
+  margin-left: 10px;
+  background-color: red;
+  height: 2rem;
+  width: 2rem;
+}
 .card-title{
   margin: 0;
 }

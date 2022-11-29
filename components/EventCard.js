@@ -1,14 +1,20 @@
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { BsFillPencilFill, BsFillTrashFill, BsArrowLeftSquare } from 'react-icons/bs';
+import {
+  BsFillPencilFill,
+  BsFillTrashFill,
+  BsArrowLeftSquare,
+  BsArrowRightSquare,
+} from 'react-icons/bs';
 import { Card, Button } from 'react-bootstrap';
-import { deleteEvent } from '../utils/data/eventData';
+import { deleteEvent, joinEvent, leaveEvent } from '../utils/data/eventData';
 import { useAuth } from '../utils/context/authContext';
 
 const EventCard = ({ obj, onUpdate }) => {
   const router = useRouter();
   const { user } = useAuth();
+  const userLogged = { uid: user.uid };
 
   const deleteThisEvent = (eventId) => {
     if (window.confirm('Are you sure?')) {
@@ -16,13 +22,21 @@ const EventCard = ({ obj, onUpdate }) => {
     }
   };
 
+  const joinThisEvent = () => {
+    joinEvent(obj.id, userLogged).then(() => onUpdate());
+  };
+
+  const leaveThisEvent = () => {
+    leaveEvent(obj.id, userLogged).then(() => onUpdate());
+  };
+
   return (
     <Card className="text-center">
       <div className="join-event-div">
         <Card.Title>{obj.description}</Card.Title>
-        {obj.organizer.id !== user.id ? (
-          <i><BsArrowLeftSquare className="join-event-button" /> Join Event</i>
-        ) : ''}
+        {obj.joined
+          ? <i><BsArrowRightSquare onClick={() => leaveThisEvent()} className="leave-event-button" /> Leave Event</i>
+          : <i><BsArrowLeftSquare onClick={() => joinThisEvent()} className="join-event-button" /> Join Event</i> }
       </div>
       <Card.Body>
         <Card.Text>Game: {obj.game.title}</Card.Text>
@@ -56,6 +70,7 @@ EventCard.propTypes = {
       uid: PropTypes.string,
       bio: PropTypes.string,
     }),
+    joined: PropTypes.bool,
   }).isRequired,
   onUpdate: PropTypes.func.isRequired,
 };

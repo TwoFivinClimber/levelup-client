@@ -3,8 +3,8 @@ import { clientCredentials } from '../client';
 
 const dbUrl = clientCredentials.databaseURL;
 
-const getEvents = () => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/events`)
+const getEvents = (uid) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/events?uid=${uid}`)
     .then((response) => response.json())
     .then(resolve)
     .catch(reject);
@@ -39,7 +39,19 @@ const deleteEvent = (id) => new Promise((resolve, reject) => {
   }).then(resolve).catch(reject);
 });
 
+const joinEvent = (id, user) => new Promise((resolve, reject) => {
+  axios.post(`${dbUrl}/events/${id}/signup`, user)
+    .then(resolve)
+    .catch(reject);
+});
+
+const leaveEvent = (id, user) => new Promise((resolve, reject) => {
+  axios.delete(`${dbUrl}/events/${id}/leave`, { data: user })
+    .then(resolve)
+    .catch(reject);
+});
+
 // eslint-disable-next-line import/prefer-default-export
 export {
-  getEvents, createEvent, getEvent, updateEvent, deleteEvent,
+  getEvents, createEvent, getEvent, updateEvent, deleteEvent, joinEvent, leaveEvent,
 };
